@@ -1,0 +1,90 @@
+Pre requisitos
+
+* Volumen NFS, VFS u otro volumen compartido para el almacen de datos de Alfresco
+* Esquema de base de datos en MySQL para repositorio de metadata de Alfresco. También pude ser PostgreSQL si se desea 
+* Apache server para balanceo con modulos mod_proxy, mod_ajp y mod_balancer. Si se usa con Nginx usar los similes correspondientes a apache, pero en especial usar AJP para la replicación de sesiones.
+
+
+Instalación
+
+* Editar y usar el script alfresco_create.sh
+
+Los valores a editar son:
+
+
+
+* JVMROUTE_NAME   :   Nombre del nodo para balanceo AJP. Usar nombres distintos para cada nodo. 
+* CONTENT_STORE   :   Nombre de la carpeta de conteniudo dentro de alfrecov /content \
+* LDAP_ENABLED    :   true o false para habilitar o deshabilitar integración con LDAP en Alfresco 
+* LDAP_AUTH_USERNAMEFORMAT     :  iFormato de        uid=%s,cn=People,dc=arkhotech,dc=com \
+* LDAP_URL        :   URL del repositorio LDAP 
+* LDAP_DEFAULT_ADMINS  :  Usuario administrador de LDAP
+* LDAP_SECURITY_PRINCIPAL   :   usuario LDAP 
+* LDAP_SECURITY_CREDENTIALS :    Password LDAP
+* LDAP_GROUP_SEARCHBASE     :  ej. ou=Groups,dc=arkhotech,dc=com 
+* LDAP_USER_SEARCHBASE      :  ej. ou=People,dc=arkhotech,dc=com 
+* DB_KIND                   : mysql o postgresql  
+* DB_HOST	            :  Host de base de datos
+* DB_USERNAME		    :  usaurio de base de datos
+* DB_PASSWORD               : Passeord de usuartio de base de datos
+* DB_NAME                   : nombre de la base de datos
+
+
+Volumenes
+
+
+Se necesitan dos volumenes para que alfresco pueda trabajar:
+
+1.- Carpeta donde se guardará todo el contenido, el cual internamente (dentro del container) esta apuntando a la carpeta /content
+2.- Carpeta de datos y metadatos, donde SOLR tiene su repositorio de indices ubicado internamente en la carpeta alf_data
+
+
+Para mantener coherente dejar estas dos carpetas en un volumen compartido por ejemplo con NFS y montarlas en cada uno de los nodos de la misma forma:
+
+Suponiendo que la carpeta compartida se llama /opt/alfresco, crear dos carpetas dentro de /opt/afresco una llamada content y la otra alfdata (los nombres pueden cambiar) 
+
+
+-v /opt/alfresco/content:/content 
+
+montar la otra carpeta:
+
+-v /opt/alfresco/alfdata:/alfresco/alf_data
+
+
+Importante,  cuando se montan estos directorios la información de instalación es eliminada por lo que se necesitan agregvar unos datos en la carpeta keystore dentro de /alfresco/alf_data. PAra solucionar este incoveniente crear dentro del volument compartido, especificamente /opt/alfreco/alfdata la carpeta que esta en este mismo directorio llamada "keystore". Esta carpeta tiene las credenciales iniciales para poder hacer login. 
+
+Una vez iniciado Alfreco la data de alkfresco se iniciará atumáticamente, al igual que los indices.
+
+
+Configuración de balanceo
+
+
+La configuración se realizó con apache2 y los modulos mod_proxy y mod_balancer
+
+El parametro  JVMROUTE_NAME debe contener un identificados unico para cada nodo y este se agrega al final de la URL en la configuración del Proxy balancer.
+
+Existen dos URL de balanceo: una para la consola de administración y otra para la capa de servicios.  Solo la capa de administración tienen control de cookie
+
+<VirtualHost *:80>
+
+        RedirectMatch ^/$ /share/       #Redirigir el root "/" hacia "/share"
+
+         <Proxy balancer://app>
+                BalancerMember ajp://dev3.arkho.tech:8009/share route=alf1
+                BalancerMember ajp://dev4.arkho.tech:8009/share route=alf2
+        </Proxy>
+
+        <Proxy balancer://service>
+              BalancerMember ajp://dev3.arkho.tech:8009/alfresco route=alf1
+              BalancerMember ajp://dev4.arkho.tech:8009/alfresco route=alf2
+        </Proxy>
+
+
+         ProxyRequests Off
+         ProxyPassReverse /share balancer://app
+         ProxyPass /share balancer://app stickysession=JSESSIONID|jsessionid
+
+          ProxyPassReverse /alfresco balancer://balancer
+ </VirtualHost>
+
+
