@@ -8,8 +8,6 @@ ROOT_DIR=$('pwd')
 
 BASE_PATH="$(dirname "$ROOT_DIR")"
 
-WEBROOT=$HOME/workspace/SIMPLE
-
 INTERNAL_PATH=/var/www/html
 
 DBLINK=simple-db:mysqldb
@@ -20,12 +18,23 @@ DBLINK=simple-db:mysqldb
 #       exit 1
 #fi
 
+
+if [ -z $WEBROOT ];
+then
+	WEBROOT=$HOME/workspace/SIMPLE
+else
+	echo "Estableciendo WEBROOT con: ${WEBROOT}"
+fi
+
+
 case $1 in
 'build')
    #docker build -t $IMAGE -f $DOCKERFILE .
 ;;
 'create-with-db')
+	echo "Creando servidor con link a base de datos"
       docker run -i -d -t --name $NAME \
+        --link $DBLINK \
         --hostname simple \
         -p 9000:9000 -v $WEBROOT:$INTERNAL_PATH  $IMAGE
 ;;
@@ -47,7 +56,7 @@ case $1 in
         fi
 ;;
 'restart')
-        docker exec -i -t $NAME  php-fpm restart
+        docker exec -i -t $NAME  /etc/init.d/php5-fpm restart
 ;;
 'console')
  docker exec -i -t $NAME /bin/bash

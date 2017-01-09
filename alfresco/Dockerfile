@@ -4,25 +4,6 @@ FROM debian:jessie-backports
 
 MAINTAINER Lucas Johnson <lucasejohnson@netscape.net>
 
-# install some necessary/desired RPMs and get updates
-#RUN yum update -y && \
-#    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-#    yum install -y \
-#                   cups-libs \
-#                   dbus-glib \
-#                   fontconfig \
-#                   hostname \
-#                   libICE \
-#                   libSM \
-#                   libXext \
-#                   libXinerama \
-#                   libXrender \
-#                   supervisor \
-#                   wget \
-#                   patch && \
-#    yum clean all
-
-
 RUN apt-get update 
 
 RUN apt-get install -y --fix-missing  wget supervisor cups libice-dev patch 
