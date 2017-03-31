@@ -1,38 +1,35 @@
-version: "2"
+version: "3.1"
 services:
-   mysql:
-     image: "mysql:5.5"
-     hostname: "mysqlserver"
-     container_name: "mysql"
-     ports: 
-       - "3306:3306"
-     volumes:
-       - $MYSQL_DATADIR:/var/lib/mysql
-     environment:
-       - MYSQL_ROOT_PASSWORD=aloja123
-
    simple:
      image: "egob/simple:v1.6"
-     container_name: "simple"
      hostname: "simple"
      ports:
        - "9000:9000"
      volumes:
-       - $WEBROOT:$INTERNAL_PATH
+       - /home/ubuntu/SIMPLE:/var/www/html
      links:
        - mysql:simple-db 
      tty: true
-
+     networks:
+       - back
    nginx:
      image: "nginx"
-     container_name: "nginx"
      hostname: "nginx-server"
      ports:
        - "80:80"
      volumes:
-       - $WEBROOT:$INTERNAL_PATH:ro
+       - /home/ubuntu/SIMPLE:/var/www/html:ro
        - ./assets/nginx.conf:/etc/nginx/nginx.conf:ro 
      links:
        - simple
      depends_on:
        - simple
+     networks:
+       - front
+       - back 
+networks:
+  
+   front:
+     driver: overlay 
+   back:
+     driver: overlay 
