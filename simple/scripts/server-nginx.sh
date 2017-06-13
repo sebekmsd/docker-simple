@@ -7,11 +7,18 @@ IMAGE=nginx
 
 ROOT_DIR=$('pwd')
 
+INTERNAL_PATH=/var/www/html
+
 BASE_PATH="$(dirname "$ROOT_DIR")"
 
-WEBROOT=$HOME/workspace/SIMPLE
+if [ -z $WEBROOT ];
+then
+	echo "Estableciendo WEBROOT por defecto"
+	WEBROOT=$HOME/workspace/SIMPLE
+else 
+	echo "Montando ruta: ${WEBROOT}"
+fi
 
-INTERNAL_PATH=/var/www/html
 
 
 case $1 in

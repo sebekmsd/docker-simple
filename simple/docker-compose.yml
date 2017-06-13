@@ -1,0 +1,41 @@
+version: "3.1"
+services:
+   simple:
+     image: "egob/simple:v1.6"
+     hostname: "simple.arkhotech.space"
+     volumes:
+       - ${WEBROOT}:/var/www/html
+     tty: true
+     cap_add:
+       - SYS_PTRACE
+     networks:
+       - simple_nw 
+   nginx:
+     image: "nginx"
+     hostname: "nginx-server"
+     ports:
+       - "80:80"
+     volumes:
+       - ${WEBROOT}:/var/www/html:ro
+       - ./assets/nginx.conf:/etc/nginx/nginx.conf:ro 
+     depends_on:
+       - simple
+     networks:
+       - simple_nw 
+   simple-db:
+     image: "mysql:5.5"
+     volumes:
+       - ${MYSQL_ROOT}/data:/var/lib/mysql
+       - ./assets/installdb.sh:/installdb.sh
+       - ./assets/init.sh:/init.sh:ro
+       - ${WEBROOT}/sql:/sql
+     ports:
+       - 3306:3306
+     environment:
+       - MYSQL_ROOT_PASSWORD=simple123
+     networks:
+       - simple_nw
+
+networks:
+   simple_nw:
+     driver: bridge 
