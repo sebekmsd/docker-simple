@@ -1,10 +1,10 @@
 version: "3.1"
 services:
    simple:
-     image: "arkhotech/php-fpm5.6"
+     image: "egob/simple:v1.6"
      hostname: "simple.arkhotech.space"
      volumes:
-       - /home/ubuntu/SIMPLE:/var/www/html
+       - ${WEBROOT}:/var/www/html
      tty: true
      cap_add:
        - SYS_PTRACE
@@ -16,7 +16,7 @@ services:
      ports:
        - "80:80"
      volumes:
-       - /home/ubuntu/SIMPLE:/var/www/html:ro
+       - ${WEBROOT}:/var/www/html:ro
        - ./assets/nginx.conf:/etc/nginx/nginx.conf:ro 
      depends_on:
        - simple
@@ -25,7 +25,10 @@ services:
    simple-db:
      image: "mysql:5.5"
      volumes:
-       - /home/ubuntu/data:/var/lib/mysql
+       - ${MYSQL_ROOT}/data:/var/lib/mysql
+       - ./assets/installdb.sh:/installdb.sh
+       - ./assets/init.sh:/init.sh:ro
+       - ${WEBROOT}/sql:/sql
      ports:
        - 3306:3306
      environment:
@@ -35,4 +38,4 @@ services:
 
 networks:
    simple_nw:
-     driver: overlay 
+     driver: bridge 
