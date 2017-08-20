@@ -58,14 +58,14 @@ sleep 30s
 
 MYSQL_CONTAINER=`docker ps -f NAME=simple_simple-db -q`
 
-docker exec -ti ${MYSQL_CONTAINER} /init.sh
+docker exec -i ${MYSQL_CONTAINER} /init.sh
 
-docker exec -ti ${MYSQL_CONTAINER} /installdb.sh
+docker exec -i ${MYSQL_CONTAINER} /installdb.sh
 
 CONTAINER_ID=`docker ps -f NAME=simple_simple_ -q`
 #instalar tablas
 
-docker exec -ti ${CONTAINER_ID} php /var/www/html/index.php migration migrate
+docker exec -i ${CONTAINER_ID} php /var/www/html/index.php migration migrate
 
-docker exec -ti ${CONTAINER_ID} /etc/init.d/php5-fpm restart
+docker exec -i ${CONTAINER_ID} /etc/init.d/php5-fpm restart
 
