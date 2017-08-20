@@ -5,7 +5,9 @@ URL="https://github.com/e-gob/SIMPLE.git"
 
 PATH_SIMPLE=$HOME
 
-while true; do
+if [ -z $1 ]; then
+
+  while true; do
 	echo "Indique la carpeta donde se instalará el código de SIMPLE"
 	read -p "Por defecto será en ${HOME} : " input
 
@@ -30,7 +32,10 @@ while true; do
 		echo "La Ruta especificada no existe ! $input"
 		exit
 	fi
-done
+  done
+else
+   PATH_SIMPLE=$1
+fi
 
 echo "Instalación del código OK"
 
