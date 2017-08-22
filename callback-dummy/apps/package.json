@@ -1,0 +1,14 @@
+{
+  "name": "aws-cms",
+  "version": "1.0.0",
+  "description": "Prototipo API Manager para S3 y CMS",
+  "main": "app.js",
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Marcelo Silva",
+  "license": "ISC"
+}
