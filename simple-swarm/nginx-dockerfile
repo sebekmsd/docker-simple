@@ -1,0 +1,5 @@
+FROM nginx
+
+VOLUME /var/www/html
+
+ONBUILD COPY ./SIMPLE /var/www/html

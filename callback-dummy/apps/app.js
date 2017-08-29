@@ -5,7 +5,7 @@ var express = require("express"),
 
 
 var AWS = require('aws-sdk');
-
+AWS.config.update({region:'us-east-2'});
 var router = express.Router();
 
 app.use(bodyParser.urlencoded({
@@ -25,12 +25,12 @@ router.post('/callback_receiver',function(req,res){
     FunctionName: 'simpleSlackMessage', // the lambda function we are going to invoke
     InvocationType: 'RequestResponse',
     LogType: 'Tail',
-    Payload: { "message" : "Resultados Callback SIMPLE",
-               "payload" : req.body,
-               "status":  "SUCCEEDED" }
+    Payload: '{ "message" : "Resultados Callback SIMPLE",' +
+              ' "payload" :'+  JSON.stringify(req.body) + ',' +
+              ' "status":  "SUCCEEDED" }'
   };
 
-  lambda.addPermission(params, function (err, data) {
+  lambda.invoke(params, function (err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);           // successful response
   });

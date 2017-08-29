@@ -1,11 +1,9 @@
 version: "3.1"
 services:
  nodejs:
-    image: "arkhotech/nodejs"
+    image: "registry.arkhotech.space/nodejs"
     ports:
      - 8080:8080
-     - 80:80
-     - 443:443
     volumes:
       - ./apps:/home/nodejs/apps 
      
