@@ -22,7 +22,7 @@ services:
        - simple
      networks:
        - simple_nw 
-   simple-db:
+   database:
      image: "mysql:5.5"
      volumes:
        - ${MYSQL_ROOT}/data:/var/lib/mysql

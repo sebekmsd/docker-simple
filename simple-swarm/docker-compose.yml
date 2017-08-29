@@ -2,18 +2,21 @@ version: "3.1"
 
 services:
    simple:
-     image: "egob/simple:v1.6"
+     image: "registry.arkhotech.space/simple"
      hostname: "simple.arkhotech.space"
+     deploy:
+       mode: global
      tty: true
      networks:
        - backend 
      build:
        context: .
        dockerfile: simple-dockerfile
-
    nginx:
-     image: "nginx:latest"
+     image: "registry.arkhotech.space/nginx"
      hostname: "nginx-server"
+     deploy:
+       mode: global
      ports:
        - "80:80"
      volumes:
@@ -24,7 +27,7 @@ services:
        - frontend
        - backend 
      build:
-       context: .
+       context: . 
        dockerfile: nginx-dockerfile
    database:
      image: "mysql:5.5"

@@ -4,7 +4,5 @@ FROM egob/simple:v1.6
 
 #RUN echo "define('SMART_HOST','smtp-rely.google.com')" >> /etc/mail/sendmail.mc
 
-VOLUME /var/www/html
-
-ONBUILD COPY ./SIMPLE/ /var/www/html
+ADD SIMPLE  /var/www/html
 
