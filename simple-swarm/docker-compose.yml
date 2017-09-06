@@ -7,6 +7,8 @@ services:
      deploy:
        mode: global
      tty: true
+     volumes:
+       - codigo:/var/www/html
      networks:
        - backend 
      build:
@@ -20,7 +22,7 @@ services:
      ports:
        - "80:80"
      volumes:
-       - ./assets/nginx.conf:/etc/nginx/nginx.conf:ro 
+       - codigo:/var/www/html
      depends_on:
        - simple
      networks:
@@ -32,7 +34,7 @@ services:
    database:
      image: "mysql:5.5"
      volumes:
-       -  /home/simple/data:/var/lib/mysql
+       -  database:/var/lib/mysql
        - ./assets/installdb.sh:/installdb.sh
        - ./assets/init.sh:/init.sh:ro
        -  /home/simple/SIMPLE/sql:/sql
@@ -48,6 +50,9 @@ services:
          constraints: 
            - node.role == manager
 
+volumes:
+   codigo:
+   database:
 networks:
    backend:
      driver: overlay
