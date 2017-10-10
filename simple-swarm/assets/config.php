@@ -429,3 +429,15 @@ $config['tiempoconfimacioncita']=30;
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
+
+/*
+ * recaptcha sitekey
+ *
+ */
+$config['sitekey']='6Le7zycUAAAAAKrvp-ndTrKRni3yeuCZQyrkJRfH';
+
+/*
+ * recaptcha Secret Key
+ *
+ */
+$config['secretkey']='6Le7zycUAAAAAIHDhvj6Z7yZwyCzrxddRJhpGNol';

@@ -5,7 +5,8 @@ services:
      image: "registry.arkhotech.space/simple"
      hostname: "simple.arkhotech.space"
      deploy:
-       mode: global
+       placement: 
+          constraints: [node.role == manager ]
      tty: true
      volumes:
        - codigo:/var/www/html
@@ -18,9 +19,10 @@ services:
      image: "registry.arkhotech.space/nginx"
      hostname: "nginx-server"
      deploy:
-       mode: global
+       placement:
+          constraints: [node.role == manager]
      ports:
-       - "80:80"
+       - "8090:80"
      volumes:
        - codigo:/var/www/html
      depends_on:
@@ -39,7 +41,7 @@ services:
        - ./assets/init.sh:/init.sh:ro
        -  /home/simple/SIMPLE/sql:/sql
      ports:
-       - "3306:3306"
+       - "3307:3306"
      environment:
        - MYSQL_ROOT_PASSWORD=simple123
      networks:

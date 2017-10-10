@@ -48,7 +48,7 @@
 $active_group = 'default';
 $active_record = FALSE;
 
-$db['default']['hostname'] = 'simple-db';
+$db['default']['hostname'] = 'database';
 $db['default']['username'] = 'simple';
 $db['default']['password'] = 'simple';
 $db['default']['database'] = 'simple';
