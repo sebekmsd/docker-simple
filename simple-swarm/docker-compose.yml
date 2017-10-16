@@ -2,14 +2,17 @@ version: "3.1"
 
 services:
    simple:
-     image: "registry.arkhotech.space/simple"
-     hostname: "simple.arkhotech.space"
+     image: "registry.arkhotech.space/simple:3"
      deploy:
        placement: 
           constraints: [node.role == manager ]
      tty: true
      volumes:
-       - codigo:/var/www/html
+       - ./SIMPLE:/var/www/html
+       - ./assets/php.ini:/etc/php5/fpm/php.ini:ro
+       - ./assets/ssmtp.conf:/etc/ssmtp/ssmtp.conf
+       - ./assets/revaliases:/etc/ssmtp/revaliases
+       - ./assets/ssmtp.conf:/usr/local/etc/php/conf.d/mail.ini
      networks:
        - backend 
      build:
@@ -22,9 +25,9 @@ services:
        placement:
           constraints: [node.role == manager]
      ports:
-       - "8090:80"
+       - "80:80"
      volumes:
-       - codigo:/var/www/html
+       - ./SIMPLE:/var/www/html
      depends_on:
        - simple
      networks:
@@ -36,12 +39,12 @@ services:
    database:
      image: "mysql:5.5"
      volumes:
-       -  database:/var/lib/mysql
+       -  simple-mysql:/var/lib/mysql
        - ./assets/installdb.sh:/installdb.sh
        - ./assets/init.sh:/init.sh:ro
-       -  /home/simple/SIMPLE/sql:/sql
+       -  ./SIMPLE/sql:/sql
      ports:
-       - "3307:3306"
+       - "3306:3306"
      environment:
        - MYSQL_ROOT_PASSWORD=simple123
      networks:
@@ -54,7 +57,7 @@ services:
 
 volumes:
    codigo:
-   database:
+   simple-mysql:
 networks:
    backend:
      driver: overlay
