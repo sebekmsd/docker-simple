@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+   calendars:
+     image: "registry.arkhotech.space/calendars:1.2"
+     networks:
+       - backend
+     build:
+       context: .
+       dockerfile: phpfpm.dockerfile 
+     deploy:
+       placement:
+         constraints: [node.role == worker] 
+     build:
+       context: .
+       dockerfile: calendars.dockerfile
+     env_file:
+       - calendar.env
+   calredis:
+     image: redis
+     networks:
+       - backend
+
+   caldatabase:
+       image: "mysql:5.5"
+       volumes:
+         -  database:/var/lib/mysql
+       ports:
+         - "3308:3306"
+       environment:
+         - MYSQL_ROOT_PASSWORD=calendar0293
+       networks:
+         - backend
+       deploy:
+         replicas: 1
+         placement:
+           constraints: [node.role == worker]         
+       build:
+         context: .
+         dockerfile: mysql.dockerfile
+   calnginx:
+       image: "registry.arkhotech.space/calnginx:2.3"
+       ports:
+         - "8088:80"
+       depends_on:
+         - calendars
+       networks:
+         - frontend
+         - backend
+       build: 
+         context: .
+         dockerfile: nginx.dockerfile
+volumes:
+  redisdata:
+  database:
+
+networks:
+  backend:
+    driver: overlay 
+  frontend:
+    driver: overlay 

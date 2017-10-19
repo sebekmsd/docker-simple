@@ -2,7 +2,7 @@ version: "3.1"
 services:
    simple:
      image: "egob/simple:v1.6"
-     hostname: "simple.arkhotech.space"
+     hostname: "marcelos-macbook-pro.local"
      volumes:
        - ${WEBROOT}:/var/www/html
      tty: true

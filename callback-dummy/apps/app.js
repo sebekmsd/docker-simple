@@ -25,9 +25,9 @@ router.post('/callback_receiver',function(req,res){
     FunctionName: 'simpleSlackMessage', // the lambda function we are going to invoke
     InvocationType: 'RequestResponse',
     LogType: 'Tail',
-    Payload: '{ "message" : "Resultados Callback SIMPLE",' +
-              ' "payload" :'+  JSON.stringify(req.body) + ',' +
-              ' "status":  "SUCCEEDED" }'
+    Payload:  ' { "message" : "Resultados Callback SIMPLE" ' + 
+              ' ",payload" : ' + req.body  + 
+              ' ",status":  "SUCCEEDED" }';
   };
 
   lambda.invoke(params, function (err, data) {
