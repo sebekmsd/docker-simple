@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
    simple:
-     image: "registry.arkhotech.space/simple:3"
+     image: "registry.arkhotech.space/simple:3.1"
      deploy:
        placement: 
           constraints: [node.role == manager ]

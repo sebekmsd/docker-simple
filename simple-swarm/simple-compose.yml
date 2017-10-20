@@ -1,0 +1,47 @@
+version: "3.1"
+
+services:
+   simple:
+     image: "registry.arkhotech.space/simple:$VERSION"
+     tty: true
+     environment:
+       - DB_HOST=caldatabase
+       - DB_USER=simple
+       - DB_PASS=simple
+       - DB_PASSWORD=simple
+     networks:
+       - backend
+       - database 
+     build:
+       context: .
+       dockerfile: simple-dockerfile
+   nginx:
+     image: "registry.arkhotech.space/nginx"
+     hostname: "nginx-server"
+     environment:
+       - DB_HOST=caldatabase
+       - DB_USER=simple
+       - DB_PASS=simple
+       - DB_PASSWORD=simple
+     ports:
+       - "8090:80"
+     depends_on:
+       - simple
+     networks:
+       - frontend
+       - backend 
+     build:
+       context: . 
+       dockerfile: nginx-dockerfile
+
+volumes:
+   codigo:
+   simple-mysql:
+networks:
+   backend:
+     driver: overlay
+   frontend:
+     driver: overlay
+   database:
+     external: 
+       name: database_layer_db-network  
