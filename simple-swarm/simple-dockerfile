@@ -7,9 +7,15 @@ RUN chown -R www-data:www-data /var/www/html ; \
 
 RUN apt-get install curl ;\
     curl -sS https://getcomposer.org/installer |  php -- --install-dir=/usr/local/bin --filename=composer ;\
-    ln -s php /usr/local/bin/compose /bin/composer ;\
-    cd /var/www/html ;  composer install
+    ln -s /usr/local/bin/compose /bin/composer 
 
+WORKDIR /var/www/html 
+
+USER www-data
+
+RUN  composer install
+
+USER root
 
 RUN apt-get update \
 	&& apt-get install -y -q --no-install-recommends \
@@ -17,4 +23,8 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -r /var/lib/apt/lists/*
 
+COPY assets/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
+COPY assets/revaliases /etc/ssmtp/revaliases
+
+COPY assets/*.php /var/www/html/application/config/

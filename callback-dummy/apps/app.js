@@ -5,7 +5,7 @@ var express = require("express"),
 
 
 var AWS = require('aws-sdk');
-AWS.config.update({region:'us-east-2'});
+
 var router = express.Router();
 
 app.use(bodyParser.urlencoded({
@@ -26,11 +26,11 @@ router.post('/callback_receiver',function(req,res){
     InvocationType: 'RequestResponse',
     LogType: 'Tail',
     Payload:  ' { "message" : "Resultados Callback SIMPLE" ' + 
-              ' ",payload" : ' + req.body  + 
+              ' ",payload" : ' + req.body  +  q
               ' ",status":  "SUCCEEDED" }';
   };
 
-  lambda.invoke(params, function (err, data) {
+  lambda.addPermission(params, function (err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);           // successful response
   });

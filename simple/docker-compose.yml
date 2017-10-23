@@ -1,7 +1,7 @@
 version: "3.1"
 services:
    simple:
-     image: "egob/simple:v1.6"
+     image: "egob/simple:v1.6" 
      hostname: "marcelos-macbook-pro.local"
      volumes:
        - ${WEBROOT}:/var/www/html
@@ -12,7 +12,6 @@ services:
        - simple_nw 
    nginx:
      image: "nginx"
-     hostname: "nginx-server"
      ports:
        - "80:80"
      volumes:
